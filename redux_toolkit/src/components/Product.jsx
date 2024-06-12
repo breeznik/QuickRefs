@@ -1,34 +1,41 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import CardComponent from "./Card";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { useDispatch, useSelector } from "react-redux";
+import { getProducts } from "../store/productSlice";
+import StatusCode from "../utils/statusCode";
 
 const Product = () => {
-  const products = useSelector((state) => state.allProducts.products);
+  const { data: products, status } = useSelector((state) => state.products);
 
-  const RenderList = products.map((product) => {
-    const { id, title, image, price, category } = product;
+  const dispatch = useDispatch();
 
-    return (
-      <div className="four column wide" key={id}>
-        <div className="ui link cards">
-          <div className="card">
-            <div className="image">
-              <img src={image} alt="" />
-            </div>
-            <div className="content">
-              <div className="header">{title}</div>
-              <div className="meta price">{price}</div>
-              <div className="meta">{category}</div>
-            </div>
-          </div>
+  useEffect(() => {
+    //dispatch an action for fetchProducts
+    dispatch(getProducts());
+  }, []);
+
+  if (status === StatusCode.LOADING) {
+    return <h1>loading</h1>;
+  }
+  if (status === StatusCode.ERROR) {
+    return <h1>something went wrong</h1>;
+  }
+  return (
+    <div className="d-flex flex-column align-items-center">
+      <h1>Product dashboard</h1>
+      <div>
+        <div className="row justify-content-center">
+          {products?.map((product) => {
+            return (
+              <div key={product.id} className="col col-md-3 my-2 mx-2">
+                <CardComponent product={product} />
+              </div>
+            );
+          })}
         </div>
       </div>
-    );
-  });
-
-  return (
-    <>
-      {RenderList}
-    </>
+    </div>
   );
 };
 

@@ -1,19 +1,26 @@
-import Header from "./components/Header";
-import ProductLIsting from "./components/ProductLIsting";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Cart from "./components/Cart";
+import Dashboard from "./components/Dashboard";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+import RootLayout from "./layouts/RootLayout";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <ProductLIsting />,
-  },
-]);
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<RootLayout />}>
+      <Route index element={<Dashboard />}></Route>
+      <Route path={"/cart"} element={<Cart />}></Route>
+    </Route>
+  )
+);
 
 function App() {
   return (
-    <div>
-      <Header></Header>
-      <RouterProvider router={router}></RouterProvider>
+    <div className="app">
+      <RouterProvider router={router} />
     </div>
   );
 }
